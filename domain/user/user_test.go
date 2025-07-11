@@ -18,6 +18,6 @@ func TestNewUser(t *testing.T) {
 	user, err := user.NewUser(id, name)
 	require.NoError(t, err)
 
-	assert.Equal(t, id, user.Id())
+	assert.Equal(t, id, user.UUID())
 	assert.Equal(t, name, user.Name())
 }

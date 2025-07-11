@@ -3,12 +3,12 @@ package user
 import "github.com/egigiffari/nusa-test/common/errors"
 
 type User struct {
-	id   string
+	uuid string
 	name string
 }
 
-func NewUser(id string, name string) (*User, error) {
-	if len([]rune(id)) <= 0 {
+func NewUser(uuid string, name string) (*User, error) {
+	if len([]rune(uuid)) <= 0 {
 		return nil, ErrInvalidUUID
 	}
 
@@ -17,13 +17,13 @@ func NewUser(id string, name string) (*User, error) {
 	}
 
 	return &User{
-		id:   id,
+		uuid: uuid,
 		name: name,
 	}, nil
 }
 
-func (u User) Id() string {
-	return u.id
+func (u User) UUID() string {
+	return u.uuid
 }
 
 func (u User) Name() string {
