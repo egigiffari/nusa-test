@@ -7,7 +7,7 @@ import (
 
 type Repository interface {
 	AddSchedule(ctx context.Context, sch *Schedule) error
-	GetSchedule(ctx context.Context, userUUID string) (*Schedule, error)
+	GetScheduleByUser(ctx context.Context, userUUID string) (*Schedule, error)
 }
 
 var (
