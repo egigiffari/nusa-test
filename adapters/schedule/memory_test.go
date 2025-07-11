@@ -88,3 +88,46 @@ func TestMemory_AddSchedule(t *testing.T) {
 		})
 	}
 }
+
+func TestMemory_GetAllSchedules(t *testing.T) {
+	type testCase struct {
+		name   string
+		from   time.Time
+		length int
+	}
+
+	sch, err := domainSchedule.NewSchedule(
+		uuid.NewString(),
+		uuid.NewString(),
+		"Arya",
+		time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
+		[]string{"P", "P", "S", "S", "M", "M", "L"},
+	)
+
+	require.NoError(t, err)
+
+	init := make(map[string]domainSchedule.Schedule)
+	init[sch.UUID()] = *sch
+
+	repo := schedule.NewMemory(init)
+
+	testCases := []testCase{
+		{
+			name:   "Get Empty Schedules",
+			from:   time.Date(2024, time.December, 27, 0, 0, 0, 0, time.UTC),
+			length: 0,
+		},
+		{
+			name:   "Get Schedules",
+			from:   time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
+			length: 1,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			schedules := repo.GetAllSchedules(context.Background(), tc.from)
+			assert.Equal(t, len(schedules), tc.length)
+		})
+	}
+}

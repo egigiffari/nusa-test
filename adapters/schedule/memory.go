@@ -3,6 +3,7 @@ package schedule
 import (
 	"context"
 	"sync"
+	"time"
 
 	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
 )
@@ -47,4 +48,18 @@ func (repo *Memory) GetScheduleByUser(ctx context.Context, userUUID string) (*do
 	repo.Unlock()
 
 	return nil, domainSchedule.ErrScheduleNotFound
+}
+
+func (repo *Memory) GetAllSchedules(ctx context.Context, from time.Time) []domainSchedule.Schedule {
+	repo.Lock()
+
+	schedules := make([]domainSchedule.Schedule, 0)
+	for _, sc := range repo.schedules {
+		if sc.StartDate().Sub(from).Milliseconds() >= 0 {
+			schedules = append(schedules, sc)
+		}
+	}
+
+	repo.Unlock()
+	return schedules
 }
