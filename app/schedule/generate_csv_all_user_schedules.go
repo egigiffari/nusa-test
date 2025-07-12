@@ -1,4 +1,4 @@
-package services
+package schedule
 
 import (
 	"context"
@@ -6,20 +6,20 @@ import (
 	"io"
 	"time"
 
-	"github.com/egigiffari/nusa-test/domain/schedule"
+	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
 )
 
-type generateAllCSVUserSchedules struct {
-	scheduleRepo schedule.Repository
+type GenerateCSVAllUserSchedules struct {
+	scheduleRepo domainSchedule.Repository
 }
 
-func NewGenerateAllCSVUserSchedules(scheduleRepo schedule.Repository) generateAllCSVUserSchedules {
-	return generateAllCSVUserSchedules{
+func NewGenerateCSVAllUserSchedules(scheduleRepo domainSchedule.Repository) GenerateCSVAllUserSchedules {
+	return GenerateCSVAllUserSchedules{
 		scheduleRepo: scheduleRepo,
 	}
 }
 
-func (h generateAllCSVUserSchedules) Handle(ctx context.Context, query RangeDates, writer io.Writer) error {
+func (h GenerateCSVAllUserSchedules) Handle(ctx context.Context, query RangeDates, writer io.Writer) error {
 	header := []string{"ID", "Nama", query.From.Format(time.DateOnly)}
 	for i := 1; i <= query.DiffDays(); i++ {
 		header = append(header, query.From.Add(time.Hour*time.Duration(i*24)).Format(time.DateOnly))

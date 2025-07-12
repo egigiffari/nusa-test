@@ -1,10 +1,10 @@
-package services
+package schedule
 
 import (
 	"context"
 	"time"
 
-	"github.com/egigiffari/nusa-test/domain/schedule"
+	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
 )
 
 type RangeDates struct {
@@ -16,17 +16,17 @@ func (r RangeDates) DiffDays() int {
 	return int(r.To.Sub(r.From).Hours() / 24)
 }
 
-type allUserSchedules struct {
-	scheduleRepo schedule.Repository
+type AllUserSchedules struct {
+	scheduleRepo domainSchedule.Repository
 }
 
-func NewAllUserSchedules(scheduleRepo schedule.Repository) allUserSchedules {
-	return allUserSchedules{
+func NewAllUserSchedules(scheduleRepo domainSchedule.Repository) AllUserSchedules {
+	return AllUserSchedules{
 		scheduleRepo: scheduleRepo,
 	}
 }
 
-func (h allUserSchedules) Handle(ctx context.Context, query RangeDates) []UserSchedule {
+func (h AllUserSchedules) Handle(ctx context.Context, query RangeDates) []UserSchedule {
 	schedules := h.scheduleRepo.GetAllSchedules(ctx, query.From)
 
 	userSchedules := make([]UserSchedule, 0)

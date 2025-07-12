@@ -1,23 +1,23 @@
-package services
+package schedule
 
 import (
 	"context"
 	"time"
 
-	"github.com/egigiffari/nusa-test/domain/schedule"
+	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
 )
 
-type singleUserSchedules struct {
-	scheduleRepo schedule.Repository
+type SingleUserSchedules struct {
+	scheduleRepo domainSchedule.Repository
 }
 
-func NewSingleUserSchedules(scheduleRepo schedule.Repository) singleUserSchedules {
-	return singleUserSchedules{
+func NewSingleUserSchedules(scheduleRepo domainSchedule.Repository) SingleUserSchedules {
+	return SingleUserSchedules{
 		scheduleRepo: scheduleRepo,
 	}
 }
 
-func (h singleUserSchedules) Handle(ctx context.Context, userUUID string, query RangeDates) (*UserSchedule, error) {
+func (h SingleUserSchedules) Handle(ctx context.Context, userUUID string, query RangeDates) (*UserSchedule, error) {
 	sc, err := h.scheduleRepo.GetScheduleByUser(ctx, userUUID)
 	if err != nil {
 		return nil, err

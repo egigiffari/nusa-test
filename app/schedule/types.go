@@ -1,4 +1,4 @@
-package services
+package schedule
 
 type UserSchedule struct {
 	UserUUID  string
