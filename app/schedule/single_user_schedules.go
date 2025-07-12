@@ -29,7 +29,7 @@ func (h SingleUserSchedules) Handle(ctx context.Context, userUUID string, query 
 		Schedules: make(map[string]string, 0),
 	}
 
-	if sc.StartDate().Sub(query.From).Microseconds() < 0 {
+	if sc.StartDate().Sub(query.From).Microseconds() > 0 {
 		return &sch, nil
 	}
 

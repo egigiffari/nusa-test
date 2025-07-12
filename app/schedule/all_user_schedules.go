@@ -33,8 +33,9 @@ func (h AllUserSchedules) Handle(ctx context.Context, query RangeDates) []UserSc
 	for _, s := range schedules {
 
 		userSchedule := UserSchedule{
-			UserUUID: s.UserUUID(),
-			UserName: s.UserName(),
+			UserUUID:  s.UserUUID(),
+			UserName:  s.UserName(),
+			Schedules: make(map[string]string),
 		}
 
 		for i := 0; i <= query.DiffDays(); i++ {

@@ -1,9 +1,9 @@
 package schedule
 
 import (
+	"bytes"
 	"context"
 	"encoding/csv"
-	"io"
 	"time"
 
 	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
@@ -19,7 +19,7 @@ func NewGenerateCSVAllUserSchedules(scheduleRepo domainSchedule.Repository) Gene
 	}
 }
 
-func (h GenerateCSVAllUserSchedules) Handle(ctx context.Context, query RangeDates, writer io.Writer) error {
+func (h GenerateCSVAllUserSchedules) Handle(ctx context.Context, query RangeDates) ([]byte, error) {
 	header := []string{"ID", "Nama", query.From.Format(time.DateOnly)}
 	for i := 1; i <= query.DiffDays(); i++ {
 		header = append(header, query.From.Add(time.Hour*time.Duration(i*24)).Format(time.DateOnly))
@@ -46,6 +46,11 @@ func (h GenerateCSVAllUserSchedules) Handle(ctx context.Context, query RangeDate
 	content := [][]string{header}
 	content = append(content, body...)
 
-	wr := csv.NewWriter(writer)
-	return wr.WriteAll(content)
+	var buf bytes.Buffer
+	wr := csv.NewWriter(&buf)
+	if err := wr.WriteAll(content); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }

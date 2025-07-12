@@ -96,13 +96,16 @@ func (h HttpHandlers) ExportCSV(ctx *gin.Context) {
 			ctx.Query("start_date"),
 			ctx.Query("end_date"))
 
-		ctx.Writer.Header().Set("Content-Type", "text/csv")
-		ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s", fileName))
-		err := h.app.GenerateCSVSingleUserSchedules.Handle(ctx, userUUID, rangeDate, ctx.Writer)
+		data, err := h.app.GenerateCSVSingleUserSchedules.Handle(ctx, userUUID, rangeDate)
 		if err != nil {
 			h.responseError(ctx, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		ctx.Writer.Header().Set("Content-Type", "text/csv")
+		ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s", fileName))
+		ctx.Header("Content-Length", fmt.Sprintf("%d", len(data)))
+		ctx.Writer.Write(data)
 
 		return
 	}
@@ -111,13 +114,16 @@ func (h HttpHandlers) ExportCSV(ctx *gin.Context) {
 		ctx.Query("start_date"),
 		ctx.Query("end_date"))
 
-	ctx.Writer.Header().Set("Content-Type", "text/csv")
-	ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s", fileName))
-	err = h.app.GenerateCSVAllUserSchedules.Handle(ctx, rangeDate, ctx.Writer)
+	data, err := h.app.GenerateCSVAllUserSchedules.Handle(ctx, rangeDate)
 	if err != nil {
 		h.responseError(ctx, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	ctx.Writer.Header().Set("Content-Type", "text/csv")
+	ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s", fileName))
+	ctx.Header("Content-Length", fmt.Sprintf("%d", len(data)))
+	ctx.Writer.Write(data)
 }
 
 func (h HttpHandlers) responseOk(ctx *gin.Context, data any) {

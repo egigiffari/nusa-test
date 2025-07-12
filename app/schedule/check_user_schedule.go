@@ -28,8 +28,10 @@ func (h CheckUserSchedule) Handle(ctx context.Context, userUUID string, from tim
 		UserName: sc.UserName(),
 	}
 
-	if sc.StartDate().Sub(from).Microseconds() < 0 {
-		return nil, nil
+	if sc.StartDate().Sub(from).Microseconds() > 0 {
+		sch.Date = from.Format(time.DateOnly)
+		sch.Cycle = "-"
+		return &sch, nil
 	}
 
 	date, cycle := generate_schedule_dates(*sc, from, 0)

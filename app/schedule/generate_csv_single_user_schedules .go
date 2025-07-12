@@ -1,9 +1,9 @@
 package schedule
 
 import (
+	"bytes"
 	"context"
 	"encoding/csv"
-	"io"
 	"time"
 
 	domainSchedule "github.com/egigiffari/nusa-test/domain/schedule"
@@ -19,7 +19,7 @@ func NewGenerateCSVSingleUserSchedules(scheduleRepo domainSchedule.Repository) G
 	}
 }
 
-func (h GenerateCSVSingleUserSchedules) Handle(ctx context.Context, userUUID string, query RangeDates, writer io.Writer) error {
+func (h GenerateCSVSingleUserSchedules) Handle(ctx context.Context, userUUID string, query RangeDates) ([]byte, error) {
 	header := []string{"ID", "Nama", query.From.Format(time.DateOnly)}
 	for i := 1; i <= query.DiffDays(); i++ {
 		header = append(header, query.From.Add(time.Hour*time.Duration(i*24)).Format(time.DateOnly))
@@ -29,24 +29,29 @@ func (h GenerateCSVSingleUserSchedules) Handle(ctx context.Context, userUUID str
 
 	sc, err := h.scheduleRepo.GetScheduleByUser(ctx, userUUID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	wr := csv.NewWriter(writer)
+	var buf bytes.Buffer
+	wr := csv.NewWriter(&buf)
 
 	row := []string{
 		sc.UUID(),
 		sc.UserName(),
 	}
 
-	if sc.StartDate().Sub(query.From).Microseconds() < 0 {
+	if sc.StartDate().Sub(query.From).Microseconds() > 0 {
 
 		for i := 0; i <= query.DiffDays(); i++ {
 			row = append(row, "")
 		}
 
 		content = append(content, row)
-		return wr.WriteAll(content)
+		if err := wr.WriteAll(content); err != nil {
+			return nil, err
+		}
+
+		return buf.Bytes(), nil
 	}
 
 	for i := 0; i <= query.DiffDays(); i++ {
@@ -55,5 +60,9 @@ func (h GenerateCSVSingleUserSchedules) Handle(ctx context.Context, userUUID str
 	}
 
 	content = append(content, row)
-	return wr.WriteAll(content)
+	if err := wr.WriteAll(content); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
