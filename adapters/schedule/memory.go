@@ -55,7 +55,7 @@ func (repo *Memory) GetAllSchedules(ctx context.Context, from time.Time) []domai
 
 	schedules := make([]domainSchedule.Schedule, 0)
 	for _, sc := range repo.schedules {
-		if sc.StartDate().Sub(from).Milliseconds() >= 0 {
+		if sc.StartDate().Sub(from).Milliseconds() <= 0 {
 			schedules = append(schedules, sc)
 		}
 	}

@@ -114,7 +114,7 @@ func TestMemory_GetAllSchedules(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:   "Get Empty Schedules",
-			from:   time.Date(2024, time.December, 27, 0, 0, 0, 0, time.UTC),
+			from:   time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
 			length: 0,
 		},
 		{
