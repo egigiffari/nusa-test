@@ -41,15 +41,15 @@ func NewApplication(ctx context.Context) Application {
 	yono, _ := domainSchedule.NewSchedule(
 		uuid.NewString(),
 		"003",
-		"Ahmad",
+		"Yono",
 		time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
 		[]string{"M", "M", "P", "L", "P", "P", "M"},
 	)
 
 	yohan, _ := domainSchedule.NewSchedule(
 		uuid.NewString(),
-		"001",
-		"Ahmad",
+		"004",
+		"Yohan",
 		time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
 		[]string{"L", "P", "P", "P", "S", "S", "P", "L", "S", "S", "P", "S", "S", "P"},
 	)
